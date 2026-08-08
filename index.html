@@ -676,7 +676,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offse
   tbl.addEventListener('click',cekKupon);
   inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); cekKupon(); } });
 
-  var KEY='dgb_deadline', DUR=15*60*1000, dl=0;
+  var KEY='dgb_deadline_v2', DUR=6*60*60*1000, dl=0;
   try{ dl=parseInt(localStorage.getItem(KEY)||'0',10)||0; }catch(e){}
   if(!dl){ dl=Date.now()+DUR; try{ localStorage.setItem(KEY,dl); }catch(e){} }
   var bar=document.getElementById('cdbar'), el=document.getElementById('cdtime'), iv;
@@ -691,7 +691,8 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offse
   function tick(){
     var s=Math.floor((dl-Date.now())/1000);
     if(s<=0){ habis(); return; }
-    el.textContent=pad(Math.floor(s/60))+':'+pad(s%60);
+    var j=Math.floor(s/3600), m=Math.floor((s%3600)/60);
+    el.textContent=(j>0? j+':'+pad(m)+':'+pad(s%60) : pad(m)+':'+pad(s%60));
   }
   tick(); iv=setInterval(tick,1000);
 })();
