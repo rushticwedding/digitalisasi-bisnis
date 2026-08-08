@@ -676,7 +676,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offse
   tbl.addEventListener('click',cekKupon);
   inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); cekKupon(); } });
 
-  var KEY='dgb_deadline_v2', DUR=6*60*60*1000, dl=0;
+  var KEY='dgb_deadline_v3', DUR=30*60*1000, dl=0;
   try{ dl=parseInt(localStorage.getItem(KEY)||'0',10)||0; }catch(e){}
   if(!dl){ dl=Date.now()+DUR; try{ localStorage.setItem(KEY,dl); }catch(e){} }
   var bar=document.getElementById('cdbar'), el=document.getElementById('cdtime'), iv;
