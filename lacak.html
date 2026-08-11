@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacak Progres Pesanan — Digitalisasi Bisnis</title>
+<meta name="description" content="Cek progres pengerjaan website, Google Maps, media sosial, dan cetak kartu nama usahamu.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#08090C; --panel:#101319; --panel2:#151920; --line:rgba(255,255,255,.09);
+  --gold:#D9AE45; --gold-soft:rgba(217,174,69,.15); --done:#2ED47A; --wait:#6B727D;
+  --text:#F4F5F7; --muted:#A6ADB8;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink); color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.55;
+  padding:20px 16px 56px;
+}
+.wrap{max-width:520px;margin:0 auto}
+
+/* ---- header ---- */
+header{display:flex;align-items:center;gap:10px;padding:6px 0 22px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+header b{font-size:14px;font-weight:800;letter-spacing:.02em}
+header span{font-size:12px;color:var(--muted)}
+
+h1{font-size:26px;line-height:1.2;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+
+/* ---- search ---- */
+.search{display:flex;gap:8px;margin-bottom:26px}
+.search input{
+  flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);
+  color:var(--text);border-radius:10px;padding:13px 14px;font-size:15px;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;
+}
+.search input::placeholder{font-family:'Inter',sans-serif;letter-spacing:0;text-transform:none;color:#5c626e}
+.search input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:transparent}
+.search button{
+  background:var(--gold);color:#14120a;border:0;border-radius:10px;
+  padding:0 20px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;
+}
+.search button:hover{filter:brightness(1.08)}
+
+/* ---- nota card (signature) ---- */
+.nota{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);position:relative;overflow:hidden;
+}
+.nota::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:6px;
+  background:
+    radial-gradient(circle at 6px -1px, transparent 5px, var(--panel) 5.5px) 0 0/12px 6px repeat-x;
+  background-color:var(--ink);
+}
+.nota-head{padding:24px 18px 18px;border-bottom:1px dashed var(--line)}
+.kode-label{font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.kode{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--gold);letter-spacing:.04em;word-break:break-all}
+.usaha{font-size:19px;font-weight:800;margin:14px 0 2px;letter-spacing:-.01em}
+.paket{font-size:13px;color:var(--muted)}
+
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px dashed var(--line)}
+.meta div{background:var(--panel);padding:14px 18px}
+.meta dt{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.meta dd{margin:0;font-size:14px;font-weight:600}
+
+/* ---- stages ---- */
+.stages{padding:22px 18px 6px}
+.sec-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.stage{display:flex;gap:14px;padding-bottom:20px;position:relative}
+.stage:last-child{padding-bottom:4px}
+.stage::before{
+  content:"";position:absolute;left:9px;top:22px;bottom:0;width:2px;background:var(--line);
+}
+.stage:last-child::before{display:none}
+.stage.on::before{background:var(--gold)}
+.bullet{
+  width:20px;height:20px;flex:0 0 20px;border-radius:50%;
+  border:2px solid var(--line);background:var(--panel);z-index:1;
+  display:grid;place-items:center;font-size:11px;color:var(--ink);
+}
+.stage.on .bullet{background:var(--gold);border-color:var(--gold)}
+.stage.now .bullet{background:var(--panel);border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.stage-txt strong{display:block;font-size:15px;font-weight:700;color:var(--muted)}
+.stage.on .stage-txt strong,.stage.now .stage-txt strong{color:var(--text)}
+.stage-txt small{color:var(--muted);font-size:12.5px}
+.badge-now{
+  display:inline-block;margin-left:8px;font-size:10px;font-weight:800;letter-spacing:.1em;
+  background:var(--gold);color:#14120a;padding:2px 7px;border-radius:99px;vertical-align:2px;
+}
+
+/* ---- items ---- */
+.items{padding:18px 18px 6px;border-top:1px dashed var(--line)}
+.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.tick{width:22px;height:22px;flex:0 0 22px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:800}
+.tick.done{background:rgba(63,178,127,.14);color:var(--done)}
+.tick.proses{background:var(--gold-soft);color:var(--gold)}
+.tick.antre{background:var(--panel2);color:var(--wait)}
+.item-nm{flex:1;font-size:14.5px;font-weight:600}
+.item-st{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.st-done{color:var(--done)} .st-proses{color:var(--gold)} .st-antre{color:var(--wait)}
+
+.foot{padding:18px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:10px}
+.wa{
+  display:block;text-align:center;background:#1F8F4E;color:#fff;text-decoration:none;
+  padding:13px;border-radius:10px;font-weight:800;font-size:14.5px;
+}
+.wa:hover{filter:brightness(1.08)}
+.upd{font-size:12px;color:var(--muted);text-align:center}
+
+/* ---- states ---- */
+.state{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:36px 22px;text-align:center;
+}
+.state h2{font-size:17px;margin:0 0 8px;font-weight:800}
+.state p{color:var(--muted);font-size:14px;margin:0 0 18px}
+.state a{color:var(--gold);font-weight:700;text-decoration:none}
+.spin{width:26px;height:26px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 14px;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2s}}
+
+.back{display:block;text-align:center;margin-top:22px;color:var(--muted);font-size:13px;text-decoration:none}
+.back:hover{color:var(--text)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="dot"></span>
+    <b>Digitalisasi Bisnis</b>
+    <span>· Lacak progres</span>
+  </header>
+
+  <h1>Sampai mana pesanan saya?</h1>
+  <p class="sub">Masukkan kode pesanan yang dikirim lewat WhatsApp saat DP kamu masuk.</p>
+
+  <div class="search">
+    <input id="q" placeholder="Contoh: DB-0811-K7QM" autocomplete="off" spellcheck="false">
+    <button id="go">Cek</button>
+  </div>
+
+  <div id="out"></div>
+
+  <a class="back" href="/">← Kembali ke halaman utama</a>
+</div>
+
+<script>
+const DB = "https://rushtic-deco-default-rtdb.firebaseio.com";
+const WA = "6285930000508";
+
+const TAHAP = [
+  ["Diterima",       "DP masuk, slot pengerjaan kamu terkunci."],
+  ["Kumpul bahan",   "Foto dan informasi usaha sedang dikumpulkan."],
+  ["Pengerjaan",     "Website, profil Google, sosial media, dan desain cetak dikerjakan."],
+  ["Siap ditinjau",  "Hasil sudah bisa kamu lihat dan minta revisi."],
+  ["Selesai",        "Semua akun dan file diserahkan atas namamu."]
+];
+
+const out = document.getElementById("out");
+const q   = document.getElementById("q");
+
+const esc = s => String(s??"").replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
+const tgl = s => { if(!s) return "—";
+  const d=new Date(s); if(isNaN(d)) return esc(s);
+  return d.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}); };
+
+function render(k, d){
+  const tahap = Math.max(0, Math.min(4, Number(d.tahap)||0));
+  const items = Array.isArray(d.item) ? d.item : [];
+
+  const stages = TAHAP.map((t,i)=>{
+    const cls = i < tahap ? "on" : (i === tahap ? "on now" : "");
+    const mark = i < tahap ? "✓" : "";
+    return `<div class="stage ${cls}">
+      <span class="bullet">${mark}</span>
+      <span class="stage-txt">
+        <strong>${t[0]}${i===tahap?'<span class="badge-now">SEKARANG</span>':''}</strong>
+        <small>${t[1]}</small>
+      </span>
+    </div>`;
+  }).join("");
+
+  const rows = items.map(it=>{
+    const s = it.status || "antre";
+    const label = s==="done"?"Selesai":s==="proses"?"Dikerjakan":"Antre";
+    const mark  = s==="done"?"✓":s==="proses"?"•":"";
+    return `<div class="item">
+      <span class="tick ${s}">${mark}</span>
+      <span class="item-nm">${esc(it.nama)}</span>
+      <span class="item-st st-${s}">${label}</span>
+    </div>`;
+  }).join("");
+
+  const pesan = encodeURIComponent(`Halo, saya mau tanya progres pesanan ${k} (${d.usaha||""}).`);
+
+  out.innerHTML = `
+  <div class="nota">
+    <div class="nota-head">
+      <div class="kode-label">Kode pesanan</div>
+      <div class="kode">${esc(k)}</div>
+      <div class="usaha">${esc(d.usaha||"—")}</div>
+      <div class="paket">Paket ${esc(d.paket||"—")}</div>
+    </div>
+
+    <dl class="meta">
+      <div><dt>Mulai</dt><dd>${tgl(d.mulai)}</dd></div>
+      <div><dt>Target selesai</dt><dd>${tgl(d.target)}</dd></div>
+    </dl>
+
+    <div class="stages">
+      <div class="sec-label">Tahap pengerjaan</div>
+      ${stages}
+    </div>
+
+    ${items.length?`<div class="items">
+      <div class="sec-label">Rincian pekerjaan</div>
+      ${rows}
+    </div>`:""}
+
+    <div class="foot">
+      ${d.catatan?`<div class="upd">${esc(d.catatan)}</div>`:""}
+      <a class="wa" href="https://wa.me/${WA}?text=${pesan}">Tanya lewat WhatsApp</a>
+      <div class="upd">Diperbarui ${d.updatedAt?tgl(d.updatedAt):"—"}</div>
+    </div>
+  </div>`;
+}
+
+function loading(){ out.innerHTML = `<div class="state"><div class="spin"></div><p>Mencari pesanan…</p></div>`; }
+function kosong(){
+  out.innerHTML = `<div class="state">
+    <h2>Kode tidak ditemukan</h2>
+    <p>Periksa lagi kodenya, atau tanyakan langsung — biasanya kode dikirim di chat yang sama dengan bukti DP.</p>
+    <a href="https://wa.me/${WA}?text=${encodeURIComponent("Halo, saya lupa kode pesanan saya.")}">Tanya kode saya →</a>
+  </div>`;
+}
+
+async function cek(k){
+  k = (k||"").trim().toUpperCase();
+  if(!k) return;
+  history.replaceState(null,"","?kode="+encodeURIComponent(k));
+  loading();
+  try{
+    const r = await fetch(`${DB}/pesanan/${encodeURIComponent(k)}.json`);
+    const d = await r.json();
+    if(!d || typeof d !== "object") return kosong();
+    render(k, d);
+  }catch(e){
+    out.innerHTML = `<div class="state"><h2>Gagal memuat</h2><p>Periksa koneksi internetmu, lalu coba lagi.</p></div>`;
+  }
+}
+
+document.getElementById("go").onclick = () => cek(q.value);
+q.addEventListener("keydown", e => { if(e.key==="Enter") cek(q.value); });
+
+const awal = new URLSearchParams(location.search).get("kode");
+if(awal){ q.value = awal.toUpperCase(); cek(awal); }
+</script>
+</body>
+</html>
